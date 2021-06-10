@@ -1,3 +1,8 @@
+> :warning: Please do not create pull requests that contains a lot of change. Because we are working on refactoring and testing. Just pull requests that fixes a bug with a few line changes.
+
+<br/>
+<br/>
+
 <p align="center" style="box-shadow: 2px 2px;">
   <a href="https://material-table.com" rel="noopener" target="_blank" ><img width="200" src="https://raw.githubusercontent.com/mbrn/material-table.com/master/docs/assets/logo-back.png" alt="material-table"></a></p>
 </p>
@@ -12,10 +17,15 @@ A simple and powerful Datatable for React based on [Material-UI Table](https://m
 [![Financial Contributors on Open Collective](https://opencollective.com/material-table/all/badge.svg?label=financial+contributors)](https://opencollective.com/material-table) [![npm package](https://img.shields.io/npm/v/material-table/latest.svg)](https://www.npmjs.com/package/material-table)
 [![NPM Downloads](https://img.shields.io/npm/dm/material-table.svg?style=flat)](https://npmcharts.com/compare/material-table?minimal=true)
 [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/mbrn/material-table.svg)](http://isitmaintained.com/project/mbrn/material-table "Average time to resolve an issue")
+[![xscode](https://img.shields.io/badge/Available%20on-xs%3Acode-blue?style=?style=plastic&logo=appveyor&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAMAAACdt4HsAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAZQTFRF////////VXz1bAAAAAJ0Uk5T/wDltzBKAAAAlUlEQVR42uzXSwqAMAwE0Mn9L+3Ggtgkk35QwcnSJo9S+yGwM9DCooCbgn4YrJ4CIPUcQF7/XSBbx2TEz4sAZ2q1RAECBAiYBlCtvwN+KiYAlG7UDGj59MViT9hOwEqAhYCtAsUZvL6I6W8c2wcbd+LIWSCHSTeSAAECngN4xxIDSK9f4B9t377Wd7H5Nt7/Xz8eAgwAvesLRjYYPuUAAAAASUVORK5CYII=)](https://xscode.com/mbrn/material-table)
 [![Follow on Twitter](https://img.shields.io/twitter/follow/baranmehmet.svg?label=follow+baranmehmet)](https://twitter.com/baranmehmet)
 [![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/material-table/Lobby)
 
 </div>
+
+## Roadmap
+
+- [More on our roadmap can be found here](https://github.com/mbrn/material-table/blob/master/.github/ROADMAP.md)
 
 ## Key features
 
@@ -46,7 +56,7 @@ To support material-table visit [SUPPORT](https://www.patreon.com/mbrn) page.
 
 ## Issue Prioritizing
 
-Issues would be prioritized according reactions count. `is:issue is:open sort:reactions-+1-desc` filter would be use. 
+Issues would be prioritized according reactions count. `is:issue is:open sort:reactions-+1-desc` filter would be use.
 
 [List issues according to reaction score](https://github.com/mbrn/material-table/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aopen+sort%3Areactions-%2B1-desc)
 
@@ -62,13 +72,11 @@ If you use an older version of react we suggest to upgrade your dependencies or 
 
 To install material-table with `npm`:
 
-    npm install material-table --save
-    npm install @material-ui/core --save
+    npm install material-table @material-ui/core --save
 
 To install material-table with `yarn`:
 
-    yarn add material-table
-    yarn add @material-ui/core
+    yarn add material-table @material-ui/core
 
 #### 2.Add material icons
 
@@ -180,11 +188,16 @@ class App extends Component {
             {
               title: "Doğum Yeri",
               field: "birthCity",
-              lookup: { 34: "İstanbul", 63: "Şanlıurfa" }
-            }
+              lookup: { 34: "İstanbul", 63: "Şanlıurfa" },
+            },
           ]}
           data={[
-            { name: "Mehmet", surname: "Baran", birthYear: 1987, birthCity: 63 }
+            {
+              name: "Mehmet",
+              surname: "Baran",
+              birthYear: 1987,
+              birthCity: 63,
+            },
           ]}
           title="Demo Title"
         />
@@ -206,7 +219,7 @@ If you have any sort of doubt, idea or just want to talk about the project, feel
 
 ### Code Contributors
 
-This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
+This project exists thanks to all the people who contribute. [[Contribute](https://github.com/mbrn/material-table/blob/master/.github/CONTRIBUTING.md)].
 <a href="https://github.com/mbrn/material-table/graphs/contributors"><img src="https://opencollective.com/material-table/contributors.svg?width=890&button=false" /></a>
 
 ### Financial Contributors

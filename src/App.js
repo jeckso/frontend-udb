@@ -3,6 +3,8 @@ import './App.css';
 import {forwardRef} from 'react';
 import Avatar from 'react-avatar';
 import Grid from '@material-ui/core/Grid'
+import * as FileSaver from 'file-saver';
+import * as XLSX from 'xlsx';
 
 import MaterialTable from "material-table";
 import AddBox from '@material-ui/icons/AddBox';
@@ -22,6 +24,10 @@ import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import axios from 'axios'
 import Alert from '@material-ui/lab/Alert';
+import {CalendarToday} from "@material-ui/icons";
+
+const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
+const fileExtension = '.xlsx';
 
 const tableIcons = {
     Add: forwardRef((props, ref) => <AddBox {...props} ref={ref}/>),
@@ -44,7 +50,8 @@ const tableIcons = {
 };
 
 const api = axios.create({
-    baseURL: `https://udb-khpi.herokuapp.com`
+    baseURL: `http://localhost:1337/`
+    //baseURL: `https://udb-khpi.herokuapp.com`
 })
 
 
@@ -58,9 +65,9 @@ function App() {
     var parentColumns = [
 
         {title: "id", field: "id", hidden: true},
-        {title: "Ім'я", field: "FirstName"},
+        {title: "Прізвище", field: "FirstName"},
+        {title: "Ім'я", field: "LastName"},
         {title: "Побатькові", field: "MiddleName"},
-        {title: "Прізвище", field: "LastName"},
 
         {
             title: "Телефони", render: rowData => {
@@ -88,9 +95,13 @@ function App() {
     var columns = [
         {title: "id", field: "id", hidden: true},
         // {title: "Avatar", render: rowData => <Avatar maxInitials={1} size={40} round={true} name={rowData === undefined ? " " : rowData.first_name} />  },
-        {title: "Ім'я", field: "FirstName"},
+        {title: "Прізвище", field: "FirstName"},
+        {title: "Ім'я", field: "LastName"},
         {title: "Побатькові", field: "MiddleName"},
-        {title: "Прізвище", field: "LastName"},
+        {
+            title: "Форма навчання", field: "IsContract",
+            lookup: {true: 'Контракт', false: 'Бюджет'}
+        },
         {
             title: "Група",
             render: rowData => rowData.group.GroupName,
@@ -119,16 +130,40 @@ function App() {
                 rowData.emails.slice().reverse().forEach(email => result += email.Email.toString() + "\n")
                 return result
             }
-        },
-        {
-            title: "Форма оплати", field: "IsContract",
-            lookup: {true: 'Контракт', false: 'Бюджет'}
         }
         // {title: "email", field: "emails"}
     ]
     const [data, setData] = useState([]); //table data
     const [parentData, setParent] = useState([]); //parent data
 
+    const [selectedFile, setSelectedFile] = useState();
+    const [isFilePicked, setIsFilePicked] = useState(false);
+
+    const changeHandler = (event) => {
+        setSelectedFile(event.target.files[0]);
+        setIsFilePicked(true);
+    };
+
+    const handleSubmission = () => {
+        const formData = new FormData();
+
+        formData.append('file', selectedFile);
+
+        fetch(
+            'http://localhost:1337/content-export-import/import',
+            {
+                method: 'POST',
+                body: formData,
+            }
+        )
+            .then((response) => response.json())
+            .then((result) => {
+                console.log('Success:', result);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    };
     //for error handling
     const [iserror, setIserror] = useState(false)
     const [errorMessages, setErrorMessages] = useState([])
@@ -264,13 +299,33 @@ function App() {
                         }
                     </div>
                     <MaterialTable
-                        title="Данні про студентів"
+                        title="Інформація про студентів"
                         columns={columns}
                         data={data}
+                        localization={{
+                            toolbar: {
+                                exportCSVName: 'Експорт основних данних',
+                                exportPDFName: 'Експорт розширенний',
+                                searchTooltip: 'Пошук',
+                                searchPlaceholder: 'Пошук'
+                            }
+                        }}
                         icons={tableIcons}
                         options={{
                             filtering: true,
-                            exportButton: true
+                            exportButton: true,
+                            exportFileName: Date,
+
+                            exportPdf: (columns, data) => {
+                                console.log(data[0].group.GroupName)
+                                var fileName = data[0].group.GroupName+"-"+Date.now()
+                                const ws = XLSX.utils.json_to_sheet(data);
+                                const wb = { Sheets: { 'data': ws }, SheetNames: ['data'] };
+                                const excelBuffer = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+                                const dataDone = new Blob([excelBuffer], {type: fileType});
+                                FileSaver.saveAs(dataDone, fileName + fileExtension);
+                                //alert('You should develop a code to export ' + data[0] + ' rows');
+                            }
 
                         }}
                         detailPanel={[
@@ -307,7 +362,28 @@ function App() {
                 </Grid>
                 <Grid item xs={12}></Grid>
             </Grid>
+
+            <div>
+                <input type="file" name="file" onChange={changeHandler} />
+                {isFilePicked ? (
+                    <div>
+                        <p>Назва файлу: {selectedFile.name}</p>
+                        <p>Тип Файлу: {selectedFile.type}</p>
+                        <p>Розмір: {selectedFile.size}</p>
+                        <p>
+                            Дата останніх змін:{' '}
+                            {selectedFile.lastModifiedDate.toLocaleDateString()}
+                        </p>
+                    </div>
+                ) : (
+                    <p>Виберіть файл для імпорту</p>
+                )}
+                <div>
+                    <button onClick={handleSubmission}>Імпортувати</button>
+                </div>
+            </div>
         </div>
+
     );
 }
 
