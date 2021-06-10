@@ -50,8 +50,8 @@ const tableIcons = {
 };
 
 const api = axios.create({
-    baseURL: `http://localhost:1337/`
-    //baseURL: `https://udb-khpi.herokuapp.com`
+   // baseURL: `http://localhost:1337/`
+    baseURL: `https://udb-khpi.herokuapp.com`
 })
 
 
